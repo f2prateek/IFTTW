@@ -1,4 +1,4 @@
-package com.ifttw;
+package com.ifttw.location;
 
 import android.app.Service;
 import android.content.Context;
