@@ -2,22 +2,23 @@
 
 package com.ifttw;
 
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.FROYO;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
-
-import com.github.kevinsawicki.http.HttpRequest;
+import android.util.Log;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import roboguice.RoboGuice;
+
+import static com.ifttw.util.LogUtils.makeLogTag;
 
 /**
  * If This Then What application
  */
 public class IFTTWApplication extends Application {
+
+    private static final String LOGTAG = makeLogTag(IFTTWApplication.class) ;
 
     /**
      * Create main application
@@ -40,6 +41,11 @@ public class IFTTWApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //TODO: optimize
+        LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000, "com.ifttw");
+        LocationLibrary.showDebugOutput(true);
+
+        Log.d(LOGTAG, "library initialised");
         setApplicationInjector(this);
     }
 
@@ -56,6 +62,7 @@ public class IFTTWApplication extends Application {
     /**
      * Sets the application injector. Using the {@link RoboGuice#newDefaultRoboModule} as well as a
      * custom binding module {@link IFTTWModule} to set up your application module
+     *
      * @param application
      * @return
      */
