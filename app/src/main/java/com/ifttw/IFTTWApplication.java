@@ -8,7 +8,6 @@ import android.content.Context;
 import android.util.Log;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import roboguice.RoboGuice;
 
 import static com.ifttw.util.LogUtils.makeLogTag;
@@ -42,10 +41,10 @@ public class IFTTWApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        LocationLibrary.showDebugOutput(true);
+        //LocationLibrary.showDebugOutput(true);
 
         //TODO: optimize
-        LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000, "com.ifttw");
+        //LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000, "com.ifttw");
 
         Log.d(LOGTAG, "library initialised");
         setApplicationInjector(this);

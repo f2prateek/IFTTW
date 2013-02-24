@@ -2,13 +2,17 @@
 
 <resources>
 
+    <string name="app_name">IFTTW</string>
+
+    <!-- Login Stuff!-->
     <string name="fullnameLabel">Full Name:</string>
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Sign Up!</string>
     <string name="cancelLabel">Cancel</string>
-    <string name="app_name">IFTTW</string>
     <string name="name">Your Name</string>
     <string name="username">A Memorable Username</string>
-    <string name="password">Password</string><string name="newFenceButtonText">+</string><string name="yourFencesLabel">Your Fences</string>
+    <string name="password">Password</string>
+    <string name="newFenceButtonText">+</string>
+    <string name="yourFencesLabel">Your Fences</string>
 
 </resources>

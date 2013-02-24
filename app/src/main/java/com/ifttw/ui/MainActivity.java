@@ -2,36 +2,64 @@ package com.ifttw.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.ifttw.LocationService;
 import com.ifttw.R;
 import com.ifttw.model.Fence;
 import com.ifttw.model.User;
 import com.parse.*;
 
 import java.util.List;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class MainActivity extends RoboSherlockFragmentActivity {
 
     private ParseUser user;
 
-    public MainActivity() {
-
-        this.user = getUserFromAccountManager();
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Parse.initialize(this, "D6ygFDR2M418xIgbT4fdWJKUpTubDKHG1ZxvaHzS", "8lj260b0W5DsCqrm0kWl4oCv4NLNHLPpT0kZKCWm");
+        setContentView(R.layout.activity_main);
 
-//        setContentView(R.layout.fences_fragment);
+        checkAuth();
+
+        //add button listener to allow new Fence Creation
+        Button newFenceButton = (Button) findViewById(R.id.addFenceButton);
+        newFenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewFence();
+            }
+        });
+
+    }
+
+    /**
+     * Fetches the user from the Account Manager to allow a session to be continued after exit.
+     * Place holder for now.
+     */
+    private void checkAuth() {
+
+        //TODO: read from device
+        ParseUser.logInInBackground("IFTTW", "IFTTW", new LogInCallback() {
+            public void done(ParseUser user, ParseException e) {
+                if (user != null) {
+                    // Hooray! The user is logged in.
+                } else {
+                    // Signup failed. Look at the ParseException to see what happened.
+                }
+            }
+        });
+
+        //this.user = getUserFromAccountManager();
 
         //if we have an authenticated user, skip auth
         if( user == null ) {
@@ -43,15 +71,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
            buildFenceList();
 
         }
-
-        //add button listener to allow new Fence Creation
-        Button newFenceButton = (Button) findViewById(R.id.addFenceButton);
-        newFenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createNewFence();
-            }
-        });
 
     }
 
@@ -108,6 +127,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
     }
 
     private void displayAlert( String title, String message ) {
+
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle( title );
         alertDialog.setMessage( message );
@@ -120,7 +140,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         alertDialog.setIcon(R.drawable.icon);
         alertDialog.show();
     }
-
 
     private void displaySignupScreen() {
 
@@ -217,7 +236,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         //TODO edit fence logic here
 
     }
-
     private void setUser( ParseUser user ) {
 
         this.user = user;

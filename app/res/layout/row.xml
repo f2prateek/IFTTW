@@ -8,5 +8,5 @@
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@id/rowTextView" android:gravity="center_vertical"/>
+            android:id="@+id/rowTextView" android:gravity="center_vertical"/>
 </LinearLayout>
