@@ -1,73 +1,56 @@
 package com.ifttw.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.EditText;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.ifttw.R;
 import com.ifttw.model.Fence;
-import com.parse.Parse;
+import com.ifttw.model.SMSAction;
+import com.parse.ParseObject;
+import roboguice.inject.InjectView;
 
 import static com.ifttw.util.LogUtils.makeLogTag;
 
-public class CreateFenceActivity extends RoboSherlockFragmentActivity {
+public class CreateFenceActivity extends RoboSherlockFragmentActivity implements View.OnClickListener {
+
+    @InjectView(R.id.create_fence_button) Button submit_button;
+    @InjectView(R.id.et_phone) EditText field_phone;
+    @InjectView(R.id.et_fence) EditText fence_name;
+    @InjectView(R.id.et_lng) EditText fence_lng;
+    @InjectView(R.id.et_lat) EditText fence_lat;
 
     private static final String LOGTAG = makeLogTag(CreateFenceActivity.class);
 
-    public Fence fence = null;
-    private Button submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_fence);
-
-        Parse.initialize(this, "D6ygFDR2M418xIgbT4fdWJKUpTubDKHG1ZxvaHzS", "8lj260b0W5DsCqrm0kWl4oCv4NLNHLPpT0kZKCWm");
-
-        // Add the map fragment to select a location.
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        final Fragment fragment = SupportMapFragment.newInstance();
-        ft.add(R.id.container, fragment);
-        ft.commit();
-
-        // Add the submit button.
-        LinearLayout layout = (LinearLayout) findViewById(R.id.container);
-        submit = new Button(this);
-        submit.setText("Select Location");
-        layout.addView(submit);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final GoogleMap map = ((SupportMapFragment) fragment).getMap();
-                LatLng location = map.getCameraPosition().target;
-                double lat = location.latitude;
-                double lng = location.longitude;
-                Log.d(LOGTAG, "new fence at " + location.toString());
-                fence = new Fence("HOME", lat, lng);
-                // Replace the current fragment with the fragment to select an action.
-                Fragment fragment = new SMSFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.container, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
-                submit.setVisibility(View.GONE);
-            }
-        });
+        submit_button.setOnClickListener(this);
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        submit.setVisibility(View.VISIBLE);
+    public void onClick(View v) {
+        String name = fence_name.getText().toString();
+        double latitude = Double.parseDouble(fence_lng.getText().toString());
+        double longitude = Double.parseDouble(fence_lat.getText().toString());
+
+        //Fence
+        Fence fence = new Fence(name, latitude, longitude);
+        ParseObject fenceObj = fence.createParseObject();
+        fenceObj.saveInBackground();
+
+        //Action
+        String number =  field_phone.getText().toString();
+        SMSAction smsAction = new SMSAction(number);
+        ParseObject action = new ParseObject("Action");
+        action.put("fence", fenceObj);
+        action.put("name", smsAction.getID());
+        action.put("value", smsAction.getNumber());
+        action.saveInBackground();
+
+        finish();
     }
 }
