@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.EditText;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
-import com.ifttw.LocationService;
 import com.ifttw.R;
 import com.ifttw.model.User;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+// This activity shows a list of fences
+// It also adds an item to the menu bar to add a new fence and action
 public class MainActivity extends RoboSherlockFragmentActivity {
 
     private ParseUser user;
@@ -26,7 +30,23 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_fence:
+                startActivity(new Intent(this, CreateFenceActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.activity_main, menu);
+        return true;
+    }
 
     /**
      * Fetches the user from the Account Manager to allow a session to be continued after exit.
@@ -49,7 +69,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
 
         //if we have an authenticated user, skip auth
-        if( user == null ) {
+        if (user == null) {
 
             displayAuthDialog();
 
@@ -62,6 +82,13 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         return null;
 
     }
+
+    private void setUser(ParseUser user) {
+
+        this.user = user;
+
+    }
+
     private void displayAuthDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -101,6 +128,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         builder.create();
 
     }
+
     private void displayLoginFailedAlert() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Login Failed!");
@@ -109,6 +137,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         alertDialog.setIcon(R.drawable.icon);
         alertDialog.show();
     }
+
     private void displaySignupScreen() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -133,11 +162,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 });
 
         builder.create();
-
-    }
-    private void setUser( ParseUser user ) {
-
-        this.user = user;
 
     }
 }
