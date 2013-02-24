@@ -5,11 +5,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.*;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.ifttw.LocationService;
 import com.ifttw.R;
+import com.ifttw.model.Fence;
 import com.ifttw.model.User;
+import com.parse.*;
+
+import java.util.List;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -24,15 +29,24 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         setContentView(R.layout.activity_main);
 
+        checkAuth();
+
+        //add button listener to allow new Fence Creation
+        Button newFenceButton = (Button) findViewById(R.id.addFenceButton);
+        newFenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewFence();
+            }
+        });
+
     }
-
-
 
     /**
      * Fetches the user from the Account Manager to allow a session to be continued after exit.
      * Place holder for now.
      */
-    private User getUser() {
+    private void checkAuth() {
 
         //TODO: read from device
         ParseUser.logInInBackground("IFTTW", "IFTTW", new LogInCallback() {
@@ -47,7 +61,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         //this.user = getUserFromAccountManager();
 
-
         //if we have an authenticated user, skip auth
         if( user == null ) {
 
@@ -55,13 +68,22 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         } else {
 
-//            populateFencesView();
+           buildFenceList();
 
         }
+
+    }
+
+    /**
+     * Fetches the user from the Account Manager to allow a session to be continued after exit.
+     * Place holder for now.
+     */
+    private User getUserFromAccountManager() {
 
         return null;
 
     }
+
     private void displayAuthDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -81,17 +103,19 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 .setNeutralButton(R.string.loginLabel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        EditText user = (EditText) findViewById(R.id.username);
+                        EditText username = (EditText) findViewById(R.id.username);
                         EditText password = (EditText) findViewById(R.id.password);
 
                         try {
 
-                            setUser(User.logIn(user.getText().toString(), password.getText().toString()));
+                            setUser(User.logIn(username.getText().toString(), password.getText().toString()));
+                            buildFenceList();
+                            dialog.dismiss();
 
                         } catch (ParseException e) {
 
                             user = null;
-                            displayLoginFailedAlert();
+                            displayAlert("Login Failed!", "The credentials you entered where in correct. Please try again.");
 
                         }
 
@@ -101,14 +125,22 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         builder.create();
 
     }
-    private void displayLoginFailedAlert() {
+
+    private void displayAlert( String title, String message ) {
+
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Login Failed!");
-        alertDialog.setMessage("The credentials you entered where in correct. Please try again.");
-        // Set the Icon for the Dialog
+        alertDialog.setTitle( title );
+        alertDialog.setMessage( message );
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Okay", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
         alertDialog.setIcon(R.drawable.icon);
         alertDialog.show();
     }
+
     private void displaySignupScreen() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -120,19 +152,88 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         builder.setView(inflater.inflate(R.layout.login, null))
 
                 //Bring Up Login Screen If Clicked
-                .setNeutralButton(R.string.signupLabel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancelLabel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        displaySignupScreen();
+                        dialog.dismiss();
                     }
                 })
-                .setNeutralButton(R.string.loginLabel, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.signupLabel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        EditText name = (EditText) findViewById(R.id.name);
+                        EditText username = (EditText) findViewById(R.id.username);
+                        EditText password = (EditText) findViewById(R.id.password);
+
+                        user = new User(name.getText().toString(), username.getText().toString(), password.getText().toString());
+
+                        try {
+
+                            user.signUp();
+                            displayAlert("Success!", "Sign up completed successfully!");
+                            dialog.dismiss();
+
+                        } catch (ParseException e) {
+
+                            user = null;
+                            displayAlert("Failure!", "Sign up failed, please try again!");
+
+
+                        }
 
                     }
                 });
 
         builder.create();
+        builder.show();
+
+    }
+
+    private void buildFenceList() {
+
+        ListView lView = (ListView) findViewById(R.id.listView);
+
+        ParseQuery query = new ParseQuery( Fence.getObjectName() );
+
+        try {
+
+            List<ParseObject> fences = query.find();
+
+            ArrayAdapter<ParseObject> adapter = new ArrayAdapter<ParseObject>(this, R.layout.row, R.id.rowTextView, fences);
+
+            lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View arg1, int pos, long id) {
+
+                    ArrayAdapter<ParseObject> ad = (ArrayAdapter<ParseObject>) adapter.getAdapter();
+                    ParseObject fence = ad.getItem( pos );
+
+                    editExistingFence(fence);
+
+                }
+            });
+
+            lView.setAdapter(adapter);
+            adapter.setNotifyOnChange(true);
+
+        } catch (ParseException e) {
+            //TODO Some sort of error handling here
+        }
+
+
+
+
+    }
+
+    private void createNewFence() {
+
+        //TODO create fence logic here
+
+    }
+
+    private void editExistingFence(ParseObject fence){
+
+        //TODO edit fence logic here
 
     }
     private void setUser( ParseUser user ) {
