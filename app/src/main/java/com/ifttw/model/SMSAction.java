@@ -1,26 +1,21 @@
 package com.ifttw.model;
 
 import com.ifttw.model.AbstractAction;
+import com.parse.ParseObject;
 
 public class SMSAction extends AbstractAction {
 
-    public SMSAction() {
+    private String message = "";
+    private String number = "";
+
+    public SMSAction(String message, String number) {
         name = "Send a text message.";
         id = "SMS";
+        this.message = message;
+        this.number = number;
     }
 
-    @Override
-    public void addPair(String key, String value) {
-        addPair(key, value);
-    }
+    public String getMessage() { return message; }
+    public String getNumber() { return number; }
 
-    @Override
-    public void removePair(String key) {
-        removePair(key);
-    }
-
-    @Override
-    public String toJSON() {
-        return toJSON();
-    }
 }

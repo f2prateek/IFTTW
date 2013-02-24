@@ -6,21 +6,6 @@
               android:layout_height="fill_parent"
               android:layout_centerHorizontal="true">
 
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Select a location for your fence:" />
-
-    <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            ></EditText>
-
-    <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            ></EditText>
-
     <Button
             android:id="@+id/submit"
             android:layout_width="fill_parent"
