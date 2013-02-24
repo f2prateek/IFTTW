@@ -44,7 +44,7 @@ public class LocationService extends Service implements LocationListener {
         Log.d(LOGTAG, "got location " + location.toString());
 
         ParseQuery query = new ParseQuery("Fence");
-        query.whereNear("location", locationToGeoPoint(location));
+        query.whereNear("geopoint", locationToGeoPoint(location));
         query.setLimit(1);
         query.findInBackground(new FindCallback() {
             @Override
