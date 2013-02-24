@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -41,11 +40,18 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         } else {
 
-//            populateFencesView();
+           buildFenceList();
 
         }
 
-
+        //add button listener to allow new Fence Creation
+        Button newFenceButton = (Button) findViewById(R.id.addFenceButton);
+        newFenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewFence();
+            }
+        });
 
     }
 
@@ -84,7 +90,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                         try {
 
                             setUser(User.logIn(username.getText().toString(), password.getText().toString()));
-                            populateViews();
+                            buildFenceList();
                             dialog.dismiss();
 
                         } catch (ParseException e) {
@@ -164,13 +170,14 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
     }
 
-    private void populateViews() {
+    private void buildFenceList() {
 
         ListView lView = (ListView) findViewById(R.id.listView);
 
         ParseQuery query = new ParseQuery( Fence.getObjectName() );
 
         try {
+
             List<ParseObject> fences = query.find();
 
             ArrayAdapter<ParseObject> adapter = new ArrayAdapter<ParseObject>(this, R.layout.row, R.id.rowTextView, fences);
@@ -182,7 +189,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                     ArrayAdapter<ParseObject> ad = (ArrayAdapter<ParseObject>) adapter.getAdapter();
                     ParseObject fence = ad.getItem( pos );
 
-                    editFence(fence);
+                    editExistingFence(fence);
 
                 }
             });
@@ -199,7 +206,13 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
     }
 
-    private void editFence( ParseObject fence ){
+    private void createNewFence() {
+
+        //TODO create fence logic here
+
+    }
+
+    private void editExistingFence(ParseObject fence){
 
         //TODO edit fence logic here
 
