@@ -18,7 +18,7 @@
             android:debuggable="true">
 
         <activity
-                android:name=".ui.MainActivity"
+                android:name=".ui.CreateFenceActivity"
                 android:excludeFromRecents="true">
 
             <!--
