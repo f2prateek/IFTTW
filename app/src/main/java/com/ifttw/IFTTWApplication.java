@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
+
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseUser;
+
 import roboguice.RoboGuice;
 
 import static com.ifttw.util.LogUtils.makeLogTag;
@@ -21,7 +23,7 @@ import static com.ifttw.util.LogUtils.makeLogTag;
  */
 public class IFTTWApplication extends Application {
 
-    private static final String LOGTAG = makeLogTag(IFTTWApplication.class);
+    private static final String LOGTAG = makeLogTag(IFTTWApplication.class) ;
 
     /**
      * Create main application
@@ -79,4 +81,5 @@ public class IFTTWApplication extends Application {
         startService(new Intent(getBaseContext(), LocationService.class));
         setApplicationInjector(this);
     }
+
 }

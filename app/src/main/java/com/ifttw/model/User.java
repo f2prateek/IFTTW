@@ -3,7 +3,7 @@ package com.ifttw.model;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-public class User extends ParseUser implements Parsable {
+public class User extends ParseUser {
 
     //Possibly need for Facebook
     //private int token;
