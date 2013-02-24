@@ -212,7 +212,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         ListView lView = (ListView) findViewById(R.id.listView);
 
-        ParseQuery query = new ParseQuery(Fence.getObjectName());
+        ParseQuery query = new ParseQuery("Fence");
 
         try {
 
