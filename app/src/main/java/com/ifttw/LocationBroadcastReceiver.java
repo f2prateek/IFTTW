@@ -29,9 +29,8 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
         // The broadcast has woken up your app, and so you could do anything now -
         // perhaps send the location to a server, or refresh an on-screen widget.
         // We're gonna create a notification.
-
         // Construct the notification.
-        Notification notification = new Notification(R.drawable.icon, "Locaton updated " + locationInfo.getTimestampAgeInSeconds() + " seconds ago", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.icon, "Location updated " + locationInfo.getTimestampAgeInSeconds() + " seconds ago", System.currentTimeMillis());
 
         Intent contentIntent = new Intent(context, MainActivity.class);
         PendingIntent contentPendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -41,9 +41,10 @@ public class IFTTWApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        LocationLibrary.showDebugOutput(true);
+
         //TODO: optimize
         LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000, "com.ifttw");
-        LocationLibrary.showDebugOutput(true);
 
         Log.d(LOGTAG, "library initialised");
         setApplicationInjector(this);
