@@ -49,7 +49,11 @@ public class LocationService extends Service implements LocationListener {
         query.findInBackground(new FindCallback() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-
+                if(parseObjects.size()==1) {
+                    ParseObject checkin = new ParseObject("Checkin");
+                    checkin.put("fence",parseObjects.get(0));
+                    checkin.saveInBackground();
+                }
             }
         });
 

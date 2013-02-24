@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
+import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseUser;
 import roboguice.RoboGuice;
@@ -66,6 +67,8 @@ public class IFTTWApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(LOGTAG, "starting application");
+
+        Parse.initialize(this, "D6ygFDR2M418xIgbT4fdWJKUpTubDKHG1ZxvaHzS", "8lj260b0W5DsCqrm0kWl4oCv4NLNHLPpT0kZKCWm");
 
         ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
