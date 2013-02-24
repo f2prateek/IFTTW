@@ -44,12 +44,17 @@ public class LocationService extends Service implements LocationListener {
         Log.d(LOGTAG, "got location " + location.toString());
 
         ParseQuery query = new ParseQuery("Fence");
-        query.whereNear("location", locationToGeoPoint(location));
+        query.whereNear("geopoint", locationToGeoPoint(location));
         query.setLimit(1);
         query.findInBackground(new FindCallback() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-
+                Log.d(LOGTAG, parseObjects.size()+"");
+                if(parseObjects.size()==1) {
+                    ParseObject checkin = new ParseObject("Checkin");
+                    checkin.put("fence",parseObjects.get(0));
+                    checkin.saveInBackground();
+                }
             }
         });
 

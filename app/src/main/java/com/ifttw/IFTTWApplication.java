@@ -5,9 +5,15 @@ package com.ifttw;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
+
+import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseUser;
+
 import roboguice.RoboGuice;
 
 import static com.ifttw.util.LogUtils.makeLogTag;
@@ -37,19 +43,6 @@ public class IFTTWApplication extends Application {
         attachBaseContext(context);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        //LocationLibrary.showDebugOutput(true);
-
-        //TODO: optimize
-        //LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000, "com.ifttw");
-
-        Log.d(LOGTAG, "library initialised");
-        setApplicationInjector(this);
-    }
-
     /**
      * Create main application
      *
@@ -71,4 +64,22 @@ public class IFTTWApplication extends Application {
         return RoboGuice.setBaseApplicationInjector(application, Stage.DEVELOPMENT, RoboGuice.newDefaultRoboModule
                 (application), new IFTTWModule());
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(LOGTAG, "starting application");
+
+        Parse.initialize(this, "D6ygFDR2M418xIgbT4fdWJKUpTubDKHG1ZxvaHzS", "8lj260b0W5DsCqrm0kWl4oCv4NLNHLPpT0kZKCWm");
+
+        ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+        // Optionally enable public read access while disabling public write access.
+        // defaultACL.setPublicReadAccess(true);
+        ParseACL.setDefaultACL(defaultACL, true);
+
+        startService(new Intent(getBaseContext(), LocationService.class));
+        setApplicationInjector(this);
+    }
+
 }
