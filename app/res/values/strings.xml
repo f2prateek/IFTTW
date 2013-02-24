@@ -9,7 +9,10 @@
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Sign Up!</string>
     <string name="cancelLabel">Cancel</string>
-    <string name="username">Username</string>
+    <string name="name">Your Name</string>
+    <string name="username">A Memorable Username</string>
     <string name="password">Password</string>
+    <string name="newFenceButtonText">+</string>
+    <string name="yourFencesLabel">Your Fences</string>
 
 </resources>
