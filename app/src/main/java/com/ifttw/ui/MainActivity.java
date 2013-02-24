@@ -1,8 +1,8 @@
 package com.ifttw.ui;
 
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -135,5 +135,4 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         this.user = user;
 
     }
-
 }

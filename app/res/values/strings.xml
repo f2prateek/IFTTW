@@ -2,10 +2,12 @@
 
 <resources>
 
-    <string name="app_name">RecipeBot</string>
     <string name="fullnameLabel">Full Name:</string>
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Sign Up!</string>
     <string name="cancelLabel">Cancel</string>
+    <string name="app_name">IFTTW</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 
 </resources>

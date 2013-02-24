@@ -81,6 +81,16 @@
             <version>0.6</version>
         </dependency>
         <dependency>
+            <groupId>com.parse</groupId>
+            <artifactId>android</artifactId>
+            <version>1.1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>com.littlefluffytoys</groupId>
+            <artifactId>littlefluffylocationlibrary</artifactId>
+            <version>11</version>
+        </dependency>
+        <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>otto</artifactId>
             <version>1.3.2</version>
