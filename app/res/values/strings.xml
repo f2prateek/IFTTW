@@ -17,5 +17,6 @@
     <string name="yourFencesLabel">Your Fences</string>
 
     <string name="add_fence">Add Fence</string>
+    <string name="select_location">Select Location</string>
 
 </resources>

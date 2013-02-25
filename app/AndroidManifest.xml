@@ -16,6 +16,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <permission
+            android:name="com.ifttw.permission.MAPS_RECEIVE"
+            android:protectionLevel="signature"/>
+    <uses-permission android:name="com.ifttw.permission.MAPS_RECEIVE"/>
+
     <application
             android:name=".IFTTWApplication"
             android:icon="@drawable/icon"
@@ -24,8 +29,7 @@
             android:debuggable="true">
 
         <activity
-                android:name=".ui.MainActivity"
-                android:excludeFromRecents="true">
+                android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -33,6 +37,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.LoginActivity"/>
+
+        <activity
+                android:name=".ui.CreateFenceActivity"
+                android:excludeFromRecents="true">
+        </activity>
 
         <service android:name=".LocationService" />
 

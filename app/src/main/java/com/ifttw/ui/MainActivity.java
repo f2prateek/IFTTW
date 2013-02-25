@@ -1,16 +1,20 @@
 package com.ifttw.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
+
 import android.view.View;
 import android.widget.*;
+
+import android.widget.ListView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+
+import com.actionbarsherlock.view.MenuItem;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.ifttw.LocationService;
 import com.ifttw.R;
-import com.ifttw.model.Fence;
 import com.ifttw.model.User;
 import com.parse.*;
 
@@ -20,9 +24,14 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import static com.ifttw.util.LogUtils.makeLogTag;
+
+// This activity shows a list of fences
+// It also adds an item to the menu bar to add a new fence and action
 public class MainActivity extends RoboSherlockFragmentActivity {
 
-    private ParseUser user;
+    private static final String LOGTAG = makeLogTag(MainActivity.class);
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +40,34 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         setContentView(R.layout.list_fences);
 
         checkAuth();
-
-        //add button listener to allow new Fence Creation
-        Button newFenceButton = (Button) findViewById(R.id.addFenceButton);
-        newFenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createNewFence();
-            }
-        });
-
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_fence:
+                createNewFence();
+                startActivity(new Intent(this, CreateFenceActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    /**
+     * This is called when the Login Activity returns with either a new or logged in user.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -50,7 +75,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         ArrayList<String> creds = (ArrayList<String>) bundle.getStringArrayList("User");
 
-        user = new User(creds.get(0), creds.get(1));
+        user = new User( creds.get(0), creds.get(1) );
 
         buildFenceList();
 
@@ -76,15 +101,12 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         //if we have an authenticated user, skip auth
         if( user == null ) {
 
-//            displayAuthDialog();
             Intent intent = new Intent();
             intent.setClass(this, LoginActivity.class);
             startActivity(intent);
 
         } else {
-
            buildFenceList();
-
         }
     }
 
@@ -95,34 +117,15 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
         ParseQuery query = new ParseQuery( Fence.getObjectName() );
 
-
-        try {
-
-            List<ParseObject> fences = query.whereEqualTo("user", user).find();
-
-            ArrayAdapter<ParseObject> adapter = new ArrayAdapter<ParseObject>(this, R.layout.row, R.id.rowTextView, fences);
-
-            lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View arg1, int pos, long id) {
-
-                    ArrayAdapter<ParseObject> ad = (ArrayAdapter<ParseObject>) adapter.getAdapter();
-                    ParseObject fence = ad.getItem( pos );
-
-                    editExistingFence(fence);
-
-                }
-            });
-
-            lView.setAdapter(adapter);
-            adapter.setNotifyOnChange(true);
-
-        } catch (ParseException e) {
-            //TODO Some sort of error handling here
-        }
-
-
-
+        List<ParseObject> fences = query.whereEqualTo("user", user).findInBackground(new FindCallback(){
+            @Override
+            public void done(List<ParseObject> fences, ParseException e) {
+                Log.d(LOGTAG, "found fences # " + fences.size());
+                ListView lView = (ListView) findViewById(R.id.listView);
+                FenceAdapter adapter = new FenceAdapter(MainActivity.this, fences);
+                lView.setAdapter(adapter);
+            }
+        });
 
     }
 

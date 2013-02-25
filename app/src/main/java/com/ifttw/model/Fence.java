@@ -1,30 +1,46 @@
 package com.ifttw.model;
 
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 
-public class Fence extends ParseObject {
+public class Fence {
+
+    private String name = "";
+    private double latitude = 0.0;
+    private double longitude = 0.0;
 
 
-    private static final String NAME = "Name";
-    private static final String PARSE_NAME = "Fence";
-
-    public Fence( String name ) {
-        super( Fence.PARSE_NAME );
-
-        this.add( Fence.NAME, name );
-
+    public Fence(String name, double latitude, double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public String getFullName() {
-
-        return (String) get( Fence.NAME );
-
+    public Fence(ParseObject object) {
+        this.name = object.getString("name");
+        ParseGeoPoint point = object.getParseGeoPoint("geopoint");
+        this.latitude = point.getLatitude();
+        this.longitude = point.getLongitude();
     }
 
-    public static String getObjectName() {
-
-        return PARSE_NAME;
-
+    public ParseObject createParseObject() {
+        ParseObject po = new ParseObject("Fence");
+        po.put("name", name);
+        po.put("geopoint", new ParseGeoPoint(latitude, longitude));
+        return po;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
 }
