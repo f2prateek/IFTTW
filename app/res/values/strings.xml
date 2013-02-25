@@ -9,6 +9,7 @@
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Sign Up!</string>
     <string name="cancelLabel">Cancel</string>
+    <string name="registerLabel">Complete Registration</string>
     <string name="name">Your Name</string>
     <string name="username">A Memorable Username</string>
     <string name="password">Password</string>
