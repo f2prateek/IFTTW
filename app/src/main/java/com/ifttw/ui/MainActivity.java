@@ -129,16 +129,4 @@ public class MainActivity extends RoboSherlockFragmentActivity {
 
     }
 
-    private void createNewFence() {
-
-        //TODO create fence logic here
-
-    }
-
-    private void editExistingFence(ParseObject fence){
-
-        //TODO edit fence logic here
-
-    }
-
 }
