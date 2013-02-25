@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
@@ -15,16 +13,18 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.ifttw.R;
-import com.ifttw.model.Fence;
 import com.ifttw.model.User;
 import com.parse.*;
 
 import java.util.List;
 
+import static com.ifttw.util.LogUtils.makeLogTag;
+
 // This activity shows a list of fences
 // It also adds an item to the menu bar to add a new fence and action
 public class MainActivity extends RoboSherlockFragmentActivity {
 
+    private static final String LOGTAG = makeLogTag(MainActivity.class);
     private ParseUser user;
 
     @Override
@@ -32,6 +32,8 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        buildFenceList();
 
         //checkAuth();
     }
@@ -41,7 +43,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         switch (item.getItemId()) {
             case R.id.add_fence:
                 createNewFence();
-
                 startActivity(new Intent(this, CreateFenceActivity.class));
                 return true;
             default:
@@ -209,46 +210,19 @@ public class MainActivity extends RoboSherlockFragmentActivity {
     }
 
     private void buildFenceList() {
-
-        ListView lView = (ListView) findViewById(R.id.listView);
-
         ParseQuery query = new ParseQuery("Fence");
-
-        try {
-
-            List<ParseObject> fences = query.find();
-
-            ArrayAdapter<ParseObject> adapter = new ArrayAdapter<ParseObject>(this, R.layout.row, R.id.rowTextView, fences);
-
-            lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View arg1, int pos, long id) {
-
-                    ArrayAdapter<ParseObject> ad = (ArrayAdapter<ParseObject>) adapter.getAdapter();
-                    ParseObject fence = ad.getItem(pos);
-
-                    editExistingFence(fence);
-
-                }
-            });
-
-            lView.setAdapter(adapter);
-            adapter.setNotifyOnChange(true);
-
-        } catch (ParseException e) {
-            //TODO Some sort of error handling here
-        }
-
-
+        query.findInBackground(new FindCallback(){
+            @Override
+            public void done(List<ParseObject> fences, ParseException e) {
+                Log.d(LOGTAG, "found fences # " + fences.size());
+                ListView lView = (ListView) findViewById(R.id.listView);
+                FenceAdapter adapter = new FenceAdapter(MainActivity.this, fences);
+                lView.setAdapter(adapter);
+            }
+        });
     }
 
     private void createNewFence() {
         startActivity(new Intent(this, CreateFenceActivity.class));
-    }
-
-    private void editExistingFence(ParseObject fence) {
-
-        //TODO edit fence logic here
-
     }
 }

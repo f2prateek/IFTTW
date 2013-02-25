@@ -17,6 +17,13 @@ public class Fence {
         this.longitude = longitude;
     }
 
+    public Fence(ParseObject object) {
+        this.name = object.getString("name");
+        ParseGeoPoint point = object.getParseGeoPoint("geopoint");
+        this.latitude = point.getLatitude();
+        this.longitude = point.getLongitude();
+    }
+
     public ParseObject createParseObject() {
         ParseObject po = new ParseObject("Fence");
         po.put("name", name);
